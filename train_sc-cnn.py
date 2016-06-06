@@ -137,7 +137,7 @@ def train(args):
             x = chainer.Variable(xp.asarray(x_test[i:i + batchsize]))
             t = chainer.Variable(xp.asarray(y_test[i:i + batchsize]))
             
-            y = model(x) # 損失の計算
+            y = model(x, False) # 損失の計算
             loss = F.softmax_cross_entropy(y, t)
             accuracy = F.accuracy(y, t)
 
