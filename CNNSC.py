@@ -22,26 +22,18 @@ class CNNSC(Chain):
             conv1=L.Convolution2D(input_channel, output_channel, (3, filter_width), pad=0),
             conv2=L.Convolution2D(input_channel, output_channel, (4, filter_width), pad=0),
             conv3=L.Convolution2D(input_channel, output_channel, (5, filter_width), pad=0),
-            l1=L.Linear(output_channel, n_units),
-            l2=L.Linear(output_channel, n_units),
-            l3=L.Linear(output_channel, n_units),
-            l4=L.Linear(n_units, n_label)
+            l1=L.Linear(output_channel * 3, n_units),
+            l2=L.Linear(n_units, n_label)
         )
 
         self.max_sentence_len = max_sentence_len
 
-    def __call__(self, x):
-        h1 = F.max_pooling_2d(F.relu(self.conv1(x)), 3)
-        h2 = F.dropout(F.relu(self.l1(h1)))
-        y = self.l2(h2)
-        return y
-
-
     def __call__(self, x, train=True):
         
-        h_conv1 = F.relu(self.conv1(x))
-        h_conv2 = F.relu(self.conv2(x))
-        h_conv3 = F.relu(self.conv3(x))
+        h_conv1 = F.tanh(self.conv1(x))
+        h_conv2 = F.tanh(self.conv2(x))
+        h_conv3 = F.tanh(self.conv3(x))
+
 
         """
         print 'x:', x.data.shape
@@ -53,27 +45,24 @@ class CNNSC(Chain):
         h_pool1 = F.max_pooling_2d(h_conv1, self.max_sentence_len )
         h_pool2 = F.max_pooling_2d(h_conv2, self.max_sentence_len )
         h_pool3 = F.max_pooling_2d(h_conv3, self.max_sentence_len )
+        
+        concat = F.concat((h_pool1, h_pool2, h_pool3), axis=2)
 
         """
         print 'h_pool1:', h_pool1.data.shape
         print 'h_pool2:', h_pool2.data.shape
         print 'h_pool3:', h_pool3.data.shape
+        print "concat.data.shape:", concat.data.shape
         #"""
+        
 
-        h_l1 = F.relu(self.l1(h_pool1))
-        h_l2 = F.relu(self.l2(h_pool2))
-        h_l3 = F.relu(self.l3(h_pool3))
+        h_l1 = F.dropout(F.tanh(self.l1(concat)), ratio=0.5, train=train)
+        y = self.l2(h_l1)
 
-        #h_l1_drop = F.dropout(F.concat((h_l1, h_l2, h_l3)), ratio=0.5, train=train)
-        h_l1_drop = F.dropout(h_l1 + h_l2 + h_l3, ratio=0.5, train=train)
-        y = self.l4(h_l1_drop)
-
+        
         """
         print 'h_l1:', h_l1.data.shape
-        print 'h_l2:', h_l2.data.shape
-        print 'h_l3:', h_l3.data.shape
-        print 'h_l1_drop:', h_l1_drop.data.shape
         print 'y:', y.data.shape
-        #"""
-
+        print "==================="
+        """
         return y
