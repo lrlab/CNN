@@ -64,7 +64,10 @@ def get_parser():
                         default=None,
                         metavar='PATH',
                         help='save optimizer to PATH')
-
+    parser.add_argument('--baseline',
+                        dest='baseline',
+                        action='store_true',
+                        help='if true, run baseline model')
 
     return parser
 
@@ -82,7 +85,7 @@ def save_optimizer(optimizer):
 def train(args):
 
     batchsize   = args.batchsize    # minibatch size
-    n_epoch     = args.epoch        # エポック数(パラメータ更新回数)
+    n_epoch     = args.epoch        # エポック数
 
     # Prepare dataset
     dataset, height, width = util.load_data(args.data)
@@ -107,18 +110,28 @@ def train(args):
     # 隠れ層のユニット数)
     n_label = 2
     filter_height = [3,4,5]
+    baseline_filter_height = [3]
     filter_width  = width
     output_channel = 100
     decay = 0.0001
     max_sentence_len = height
 
     # モデルの定義
-    model = CNNSC(input_channel,
-                  output_channel,
-                  filter_height,
-                  filter_width,
-                  n_label,
-                  max_sentence_len)
+    if args.baseline == False:
+        model = CNNSC(input_channel,
+                      output_channel,
+                      filter_height,
+                      filter_width,
+                      n_label,
+                      max_sentence_len)
+    else:
+        model = CNNSC(input_channel,
+                      output_channel,
+                      baseline_filter_height,
+                      filter_width,
+                      n_label,
+                      max_sentence_len)
+ 
 
     # Setup optimizer
     optimizer = optimizers.AdaDelta()
@@ -148,10 +161,9 @@ def train(args):
             t = chainer.Variable(xp.asarray(y_train[perm[i:i + batchsize]])) #target
             
             model.zerograds()
-            y = model(x)
-            
-            loss = F.softmax_cross_entropy(y, t) # 損失の計算
 
+            y = model(x)
+            loss = F.softmax_cross_entropy(y, t) # 損失の計算
             accuracy = F.accuracy(y, t) # 正解率の計算
             
             sum_train_loss += loss.data * len(t)
