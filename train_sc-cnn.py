@@ -72,18 +72,24 @@ def train(args):
     x_test  = x_test.reshape(len(x_test), input_channel, height, width)
 
     # 隠れ層のユニット数)
-    n_units = 100
+#     n_units = 100
     n_label = 2
-    filter_height = 3
+    filter_height = [3,4,5]
     filter_width  = width
     output_channel = 100
-    pooling_size = 2
+#     pooling_size = 2
     max_sentence_len = height
 
     #print output_channel * int(max_sentence_len / pooling_size)
 
     #model = L.Classifier(CNNSC(input_channel, output_channel, filter_height, filter_width, n_units, n_label, max_sentence_len))
-    model = CNNSC(input_channel, output_channel, filter_height, filter_width, n_units, n_label, max_sentence_len)
+    model = CNNSC(input_channel,
+                  output_channel,
+                  filter_height,
+                  filter_width,
+#                   n_units,
+                  n_label,
+                  max_sentence_len)
 
     # Setup optimizer
     optimizer = optimizers.AdaDelta()
@@ -157,5 +163,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
