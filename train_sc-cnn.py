@@ -208,11 +208,6 @@ def main():
     args = parser.parse_args()
     model = train(args)
 
-    if args.save_model != None:
-        save_model(model)
-    if args.save_optimizer != None:
-        save_optimizer(optimizer)
-
 if __name__ == "__main__":
     main()
 
