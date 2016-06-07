@@ -107,17 +107,18 @@ def train(args):
     x_train = x_train.reshape(len(x_train), input_channel, height, width) 
     x_test  = x_test.reshape(len(x_test), input_channel, height, width)
 
-    # 隠れ層のユニット数)
-    n_label = 2
-    filter_height = [3,4,5]
+    n_label = 2 # ラベル数
+    filter_height = [3,4,5] # フィルタの高さ
     baseline_filter_height = [3]
-    filter_width  = width
-    output_channel = 100
-    decay = 0.0001
-    max_sentence_len = height
+    filter_width  = width # リスタの幅 (embeddingの次元数)
+    output_channel = 100 
+    decay = 0.0001 # 重み減衰
+    grad_clip = 3  # gradient norm threshold to clip
+    max_sentence_len = height # max length of sentences
 
     # モデルの定義
     if args.baseline == False:
+        # 提案モデル
         model = CNNSC(input_channel,
                       output_channel,
                       filter_height,
@@ -125,6 +126,7 @@ def train(args):
                       n_label,
                       max_sentence_len)
     else:
+        # ベースラインモデル (フィルタの種類が１つ)
         model = CNNSC(input_channel,
                       output_channel,
                       baseline_filter_height,
@@ -132,11 +134,11 @@ def train(args):
                       n_label,
                       max_sentence_len)
  
-
     # Setup optimizer
     optimizer = optimizers.AdaDelta()
     optimizer.setup(model)
-    optimizer.add_hook(chainer.optimizer.GradientClipping(3))
+    optimizer.add_hook(chainer.optimizer.GradientClipping(grad_clip))
+    optimizer.add_hook(chainer.optimizer.WeightDecay(decay))
 
     #GPUを使うかどうか
     if args.gpu > 0:
@@ -171,7 +173,6 @@ def train(args):
             
             # 最適化を実行
             loss.backward()
-            optimizer.weight_decay(decay)
             optimizer.update()
 
         print('train mean loss={}, accuracy={}'.format(sum_train_loss / N, sum_train_accuracy / N)) #平均誤差
@@ -196,13 +197,12 @@ def train(args):
 
         sys.stdout.flush()
         
-
-    return model
+    return model, optimizer
 
 def main():
     parser = get_parser()
     args = parser.parse_args()
-    model = train(args)
+    model, optimizer = train(args)
 
     if args.save_model != None:
         save_model(model)
