@@ -49,7 +49,7 @@ class CNNSC(ChainList):
             # Convolition層を通す
             h_conv[i] = F.relu(self[i](x))
             # Pooling層を通す
-            h_pool[i] = F.max_pooling_2d(h_conv[filter_size], (self.max_sentence_len+1-filter_size))
+            h_pool[i] = F.max_pooling_2d(h_conv[i], (self.max_sentence_len+1-filter_size))
         # Convolution+Poolingを行った結果を結合する
         concat = F.concat(h_pool, axis=2)
         # 結合した結果に対してDropoutをかける
