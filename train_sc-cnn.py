@@ -105,22 +105,18 @@ def train(args):
     x_test  = x_test.reshape(len(x_test), input_channel, height, width)
 
     # 隠れ層のユニット数)
-#     n_units = 100
     n_label = 2
     filter_height = [3,4,5]
     filter_width  = width
     output_channel = 100
-#     pooling_size = 2
+    decay = 0.0001
     max_sentence_len = height
 
-    #print output_channel * int(max_sentence_len / pooling_size)
-
-    #model = L.Classifier(CNNSC(input_channel, output_channel, filter_height, filter_width, n_units, n_label, max_sentence_len))
+    # モデルの定義
     model = CNNSC(input_channel,
                   output_channel,
                   filter_height,
                   filter_width,
-#                   n_units,
                   n_label,
                   max_sentence_len)
 
@@ -152,17 +148,18 @@ def train(args):
             t = chainer.Variable(xp.asarray(y_train[perm[i:i + batchsize]])) #target
             
             model.zerograds()
-            y = model(x) # 損失の計算
+            y = model(x)
             
-            loss = F.softmax_cross_entropy(y, t)
+            loss = F.softmax_cross_entropy(y, t) # 損失の計算
 
-            accuracy = F.accuracy(y, t)
+            accuracy = F.accuracy(y, t) # 正解率の計算
             
             sum_train_loss += loss.data * len(t)
             sum_train_accuracy += accuracy.data * len(t)
             
             # 最適化を実行
             loss.backward()
+            optimizer.weight_decay(decay)
             optimizer.update()
 
         print('train mean loss={}, accuracy={}'.format(sum_train_loss / N, sum_train_accuracy / N)) #平均誤差
@@ -176,10 +173,10 @@ def train(args):
             x = chainer.Variable(xp.asarray(x_test[i:i + batchsize]))
             t = chainer.Variable(xp.asarray(y_test[i:i + batchsize]))
             
-            y = model(x, False) # 損失の計算
-            loss = F.softmax_cross_entropy(y, t)
-            accuracy = F.accuracy(y, t)
-
+            y = model(x, False)
+            loss = F.softmax_cross_entropy(y, t) # 損失の計算
+            accuracy = F.accuracy(y, t) # 正解率の計算
+ 
             sum_test_loss += loss.data * len(t)
             sum_test_accuracy += accuracy.data * len(t)
 
@@ -198,6 +195,11 @@ def main():
     parser = get_parser()
     args = parser.parse_args()
     model = train(args)
+
+    if args.save_model != None:
+        save_model(model)
+    if args.save_optimizer != None:
+        save_optimizer(optimizer)
 
 if __name__ == "__main__":
     main()
