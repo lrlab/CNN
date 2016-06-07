@@ -22,19 +22,20 @@ CNNによるテキスト分類 (posi-nega)
 
 def get_parser():
     
-    DEF_GPU = 0
+    DEF_GPU = -1
     DEF_DATA = "..{sep}Data{sep}input.dat".format(sep=os.sep)
     DEF_EPOCH = 100
     DEF_BATCHSIZE = 50
 
     #引数の設定
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu  ',
+    parser.add_argument('--gpu',
                         dest='gpu',
                         type=int,
                         default=DEF_GPU,
-                        help='1: use gpu, 0: use cpu')
-    parser.add_argument('--data ',
+                        metavar='CORE_NUMBER',
+                        help='use CORE_NUMBER gpu (default: use cpu)')
+    parser.add_argument('--data',
                         dest='data',
                         type=str,
                         default=DEF_DATA,
@@ -71,16 +72,16 @@ def get_parser():
 
     return parser
 
-def save_model(model):
+def save_model(model, file_path='sc_cnn.model'):
     # modelを保存
     print 'save the model'
     model.to_cpu()
-    serializers.save_npz('sc_cnn.model', model)
+    serializers.save_npz(file_path, model)
 
-def save_optimizer(optimizer):
+def save_optimizer(optimizer, file_path='sc_cnn.state'):
     # optimizerを保存
     print 'save the optimizer'
-    serializers.save_npz('sc_cnn.state', optimizer)
+    serializers.save_npz(file_path, optimizer)
 
 def train(args):
 
@@ -110,7 +111,7 @@ def train(args):
     n_label = 2 # ラベル数
     filter_height = [3,4,5] # フィルタの高さ
     baseline_filter_height = [3]
-    filter_width  = width # リスタの幅 (embeddingの次元数)
+    filter_width  = width # フィルタの幅 (embeddingの次元数)
     output_channel = 100 
     decay = 0.0001 # 重み減衰
     grad_clip = 3  # gradient norm threshold to clip
@@ -141,9 +142,9 @@ def train(args):
     optimizer.add_hook(chainer.optimizer.WeightDecay(decay))
 
     #GPUを使うかどうか
-    if args.gpu > 0:
+    if args.gpu >= 0:
         cuda.check_cuda_available()
-        cuda.get_device(0).use()
+        cuda.get_device(args.gpu).use()
         model.to_gpu()
     xp = np if args.gpu <= 0 else cuda.cupy #args.gpu <= 0: use cpu, otherwise: use gpu
 
