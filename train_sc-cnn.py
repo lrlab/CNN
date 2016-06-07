@@ -146,7 +146,7 @@ def train(args):
         cuda.check_cuda_available()
         cuda.get_device(args.gpu).use()
         model.to_gpu()
-    xp = np if args.gpu <= 0 else cuda.cupy #args.gpu <= 0: use cpu, otherwise: use gpu
+    xp = np if args.gpu < 0 else cuda.cupy #args.gpu <= 0: use cpu, otherwise: use gpu
 
     # Learning loop
     for epoch in six.moves.range(1, n_epoch + 1):
