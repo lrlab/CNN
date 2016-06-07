@@ -12,27 +12,49 @@ Code for Convolutional Neural Networks for Sentence Classification
 author: ichiroex
 """
 
-class CNNSC(Chain):
+class CNNSC(ChainList):
     
     max_sentence_len = 0
 
-    def __init__(self, input_channel, output_channel, filter_height, filter_width, n_units, n_label, max_sentence_len):
+    def __init__(self,
+                 input_channel,
+                 output_channel,
+                 filter_height,
+                 filter_width,
+                 n_units,
+                 n_label,
+                 max_sentence_len):
 
-        super(CNNSC, self).__init__(
-            conv1=L.Convolution2D(input_channel, output_channel, (3, filter_width), pad=0),
-            conv2=L.Convolution2D(input_channel, output_channel, (4, filter_width), pad=0),
-            conv3=L.Convolution2D(input_channel, output_channel, (5, filter_width), pad=0),
-            l1=L.Linear(output_channel * 3, n_units),
-            l2=L.Linear(n_units, n_label)
-        )
+        link_list = []
+        link_list += [L.Convolution2D(input_channel, output_channel, (i, filter_width), pad=0) for i in filter_height]
+        link_list += [L.Linear(output_channel * 3, n_units), L.Linear(n_units, n_label)]
+
+        super(CNNSC, self).__init__(*link_list)
+#             conv1=L.Convolution2D(input_channel, output_channel, (3, filter_width), pad=0),
+#             conv2=L.Convolution2D(input_channel, output_channel, (4, filter_width), pad=0),
+#             conv3=L.Convolution2D(input_channel, output_channel, (5, filter_width), pad=0),
+#             l1=L.Linear(output_channel, n_units),
+#             l2=L.Linear(output_channel, n_units),
+#             l3=L.Linear(output_channel, n_units),
+#             l4=L.Linear(n_units, n_label)
+#         )
 
         self.max_sentence_len = max_sentence_len
+        self.filter_height = filter_height
+        self.cnv_num = len(filter_height)
+
+#     def __call__(self, x):
+#         h1 = F.max_pooling_2d(F.relu(self.conv1(x)), 3)
+#         h2 = F.dropout(F.relu(self.l1(h1)))
+#         y = self.l2(h2)
+#         return y
+
 
     def __call__(self, x, train=True):
         
-        h_conv1 = F.tanh(self.conv1(x))
-        h_conv2 = F.tanh(self.conv2(x))
-        h_conv3 = F.tanh(self.conv3(x))
+        h_conv1 = F.relu(self[0](x))
+        h_conv2 = F.relu(self[1](x))
+        h_conv3 = F.relu(self[2](x))
 
 
         """
@@ -55,9 +77,10 @@ class CNNSC(Chain):
         print "concat.data.shape:", concat.data.shape
         #"""
         
+        
 
-        h_l1 = F.dropout(F.tanh(self.l1(concat)), ratio=0.5, train=train)
-        y = self.l2(h_l1)
+        h_l1 = F.dropout(F.tanh(self[self.cnv_num+0](concat)), ratio=0.5, train=train)
+        y = self[self.cnv_num+1](h_l1)
 
         
         """
@@ -66,3 +89,13 @@ class CNNSC(Chain):
         print "==================="
         """
         return y
+
+if __name__ == '__main__':
+    model = L.Classifier(CNNSC(input_channel=1,
+                           output_channel=100,
+                           filter_height=[3,4,5],
+                           filter_width=20,
+                           n_units=100,
+                           n_label=2,
+                           max_sentence_len=20))
+    print('done process')
