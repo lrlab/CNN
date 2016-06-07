@@ -21,13 +21,13 @@ class CNNSC(ChainList):
                  output_channel,
                  filter_height,
                  filter_width,
-                 n_units,
+#                  n_units,
                  n_label,
                  max_sentence_len):
 
         link_list = []
         link_list += [L.Convolution2D(input_channel, output_channel, (i, filter_width), pad=0) for i in filter_height]
-        link_list += [L.Linear(output_channel * 3, n_units), L.Linear(n_units, n_label)]
+        link_list += [L.Linear(output_channel * 3, output_channel * 3), L.Linear(output_channel * 3, n_label)]
 
         super(CNNSC, self).__init__(*link_list)
 #             conv1=L.Convolution2D(input_channel, output_channel, (3, filter_width), pad=0),
