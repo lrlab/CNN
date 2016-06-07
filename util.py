@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 import numpy as np
 from gensim.models import word2vec
 
@@ -10,12 +11,14 @@ def _padding(document_list, max_len):
         new_document_list.append(doc + pad_line)
     return new_document_list
 
+bin_filename = '..{sep}Data{sep}GoogleNews-vectors-negative300.bin'.format(sep=os.sep)
+
 def load_data(fname):
     
     print 'input file name:', fname
 
     print 'loading word2vec model...'
-    model =  word2vec.Word2Vec.load_word2vec_format('../../corpus/google-w2v-model/GoogleNews-vectors-negative300.bin', binary=True)
+    model =  word2vec.Word2Vec.load_word2vec_format(bin_filename, binary=True)
     #model =  word2vec.Word2Vec.load('gensim-word2vec_model_cnn.bin')
     target = [] #ラベル
     source = [] #文書ベクトル
