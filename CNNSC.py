@@ -52,37 +52,37 @@ class CNNSC(ChainList):
 
     def __call__(self, x, train=True):
         
-        h_conv1 = F.relu(self[0](x))
-        h_conv2 = F.relu(self[1](x))
-        h_conv3 = F.relu(self[2](x))
-
-
+        h_conv = [None for i in self.filter_height]
+        h_pool = [None for i in self.filter_height]
+        
+        for i in self.filter_height:
+            h_conv[i] = F.relu(self[i](x))
+            h_pool[i] = F.max_pooling_2d(h_conv[i], self.max_sentence_len)
+        concat = F.concat(h_pool, axis=2)
+        
+#         h_conv1 = F.relu(self[0](x))
+#         h_conv2 = F.relu(self[1](x))
+#         h_conv3 = F.relu(self[2](x))
         """
         print 'x:', x.data.shape
         print 'h_conv1:', h_conv1.data.shape
         print 'h_conv2:', h_conv2.data.shape
         print 'h_conv3:', h_conv3.data.shape
         #"""
-
-        h_pool1 = F.max_pooling_2d(h_conv1, self.max_sentence_len )
-        h_pool2 = F.max_pooling_2d(h_conv2, self.max_sentence_len )
-        h_pool3 = F.max_pooling_2d(h_conv3, self.max_sentence_len )
-        
-        concat = F.concat((h_pool1, h_pool2, h_pool3), axis=2)
-
+#         h_pool1 = F.max_pooling_2d(h_conv1, self.max_sentence_len )
+#         h_pool2 = F.max_pooling_2d(h_conv2, self.max_sentence_len )
+#         h_pool3 = F.max_pooling_2d(h_conv3, self.max_sentence_len )
+#         concat = F.concat((h_pool1, h_pool2, h_pool3), axis=2)
         """
         print 'h_pool1:', h_pool1.data.shape
         print 'h_pool2:', h_pool2.data.shape
         print 'h_pool3:', h_pool3.data.shape
         print "concat.data.shape:", concat.data.shape
         #"""
-        
-        
 
         h_l1 = F.dropout(F.tanh(self[self.cnv_num+0](concat)), ratio=0.5, train=train)
         y = self[self.cnv_num+1](h_l1)
 
-        
         """
         print 'h_l1:', h_l1.data.shape
         print 'y:', y.data.shape
