@@ -68,16 +68,16 @@ def get_parser():
 
     return parser
 
-def save_model(model):
+def save_model(model, file_path='sc_cnn.model'):
     # modelを保存
     print 'save the model'
     model.to_cpu()
-    serializers.save_npz('sc_cnn.model', model)
+    serializers.save_npz(file_path, model)
 
-def save_optimizer(optimizer):
+def save_optimizer(optimizer, file_path='sc_cnn.state'):
     # optimizerを保存
     print 'save the optimizer'
-    serializers.save_npz('sc_cnn.state', optimizer)
+    serializers.save_npz(file_path, optimizer)
 
 def train(args):
 
@@ -186,11 +186,11 @@ def train(args):
         print(' test mean loss={}, accuracy={}'.format(sum_test_loss / N_test, sum_test_accuracy / N_test)) #平均誤差
 
         sys.stdout.flush()
-        
+    
     if args.save_model != None:
-        save_model(model)
+        save_model(model, args.save_model)
     if args.save_optimizer != None:
-        save_optimizer(optimizer)
+        save_optimizer(optimizer, args.save_optimizer)
 
     return model
 
