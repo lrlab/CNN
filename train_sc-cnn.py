@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import sys
+import sys, os
 import six
 import argparse
 import numpy as np
@@ -20,25 +20,58 @@ Code for the paper, Convolutional Neural Networks for Sentence Classification (E
 CNNによるテキスト分類 (posi-nega)
 """
 
-def parse_argument():
+def get_parser():
     
     DEF_GPU = 0
-    DEF_DATA = "dataset/input.dat"
+    DEF_DATA = "..{sep}Data{sep}input.dat".format(sep=os.sep)
     DEF_EPOCH = 100
     DEF_BATCHSIZE = 50
 
     #引数の設定
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu  '    , dest='gpu'        , type=int, default=DEF_GPU,   help='1: use gpu, 0: use cpu')
-    parser.add_argument('--data '    , dest='data'       , type=str, default=DEF_DATA,  help='an input data file')
-    parser.add_argument('--epoch'    , dest='epoch'      , type=int, default=DEF_EPOCH,     help='number of epochs to learn')
-    parser.add_argument('--batchsize', dest='batchsize'  , type=int, default=DEF_BATCHSIZE, help='learning minibatch size')
+    parser.add_argument('--gpu  ',
+                        dest='gpu',
+                        type=int,
+                        default=DEF_GPU,
+                        help='1: use gpu, 0: use cpu')
+    parser.add_argument('--data ',
+                        dest='data',
+                        type=str,
+                        default=DEF_DATA,
+                        metavar='PATH',
+                        help='an input data file')
+    parser.add_argument('--epoch',
+                        dest='epoch',
+                        type=int,
+                        default=DEF_EPOCH,
+                        help='number of epochs to learn')
+    parser.add_argument('--batchsize',
+                        dest='batchsize',
+                        type=int,
+                        default=DEF_BATCHSIZE,
+                        help='learning minibatch size')
+    parser.add_argument('--save-model',
+                        dest='save_model',
+                        action='store',
+                        type=str,
+                        default=None,
+                        metavar='PATH',
+                        help='save model to PATH')
+    parser.add_argument('--save-optimizer',
+                        dest='save_optimizer',
+                        action='store',
+                        type=str,
+                        default=None,
+                        metavar='PATH',
+                        help='save optimizer to PATH')
 
-    return parser.parse_args()
+
+    return parser
 
 def save_model(model):
     # modelを保存
     print 'save the model'
+    model.to_cpu()
     serializers.save_npz('sc_cnn.model', model)
 
 def save_optimizer(optimizer):
@@ -153,12 +186,17 @@ def train(args):
         print(' test mean loss={}, accuracy={}'.format(sum_test_loss / N_test, sum_test_accuracy / N_test)) #平均誤差
 
         sys.stdout.flush()
+        
+    if args.save_model != None:
+        save_model(model)
+    if args.save_optimizer != None:
+        save_optimizer(optimizer)
 
     return model
 
 def main():
-
-    args = parse_argument()
+    parser = get_parser()
+    args = parser.parse_args()
     model = train(args)
 
 if __name__ == "__main__":
