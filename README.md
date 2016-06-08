@@ -6,8 +6,10 @@ This code is written in Python with Chainer which is framework of Deep Neural Ne
 Please download `GoogleNews-vectors-negative300.bin.gz` from [this site](https://code.google.com/archive/p/word2vec/) and put it in the same directory as these codes.  
 
 # Usage
-  $ python train_sc-cnn.py [-h] [--gpu CORE_NUMBER] [--data PATH] [--epoch EPOCH] [--batchsize BATCHSIZE] [--save-model PATH] [--save-optimizer PATH] [--baseline]
-
+```
+  $ python train_sc-cnn.py [-h] [--gpu CORE_NUMBER] [--data PATH] [--epoch EPOCH]  
+  [--batchsize BATCHSIZE] [--save-model PATH] [--save-optimizer PATH] [--baseline]
+```
 
 # Optional arguments
 ```
