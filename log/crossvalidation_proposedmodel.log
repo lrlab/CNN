@@ -1726,3 +1726,12 @@ train mean loss=0.00112094020005, accuracy=0.999791562557
 epoch 73 / 100
 train mean loss=0.00123316852842, accuracy=0.999687314034
  test mean loss=0.926703989506, accuracy=0.782363951206
+epoch 74 / 100
+train mean loss=0.00125252536964, accuracy=0.999791562557
+ test mean loss=0.896664261818, accuracy=0.787054419518
+epoch 75 / 100
+train mean loss=0.00114252732601, accuracy=0.999791562557
+ test mean loss=0.900793373585, accuracy=0.787992477417
+epoch 76 / 100
+train mean loss=0.393086671829, accuracy=0.860135495663
+ test mean loss=0.731493413448, accuracy=0.734521567822
