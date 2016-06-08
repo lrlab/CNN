@@ -215,24 +215,6 @@ def train(args):
             
     return model, optimizer
 
-def my_train_test_split(source, target):
-    """
-    k-分割交差検定用にデータセットを分割する
-    i / k 番目の時のデータセットを作る
-    """
-    
-    kfold = cross_validation.KFold(len(source), n_folds=3)
-    for train, test in kfold:
-        
-        x_train = np.array([ source[i] for i in train ])
-        x_test = np.arange([ source[i] for i in test ])
-
-        y_train = np.array([ target[i] for i in train ])
-        y_test = np.arange([ target[i] for i in test ])
-
-    return x_train, x_test, y_train, y_test
-
-
 def main():
 
     parser = get_parser()
@@ -244,9 +226,6 @@ def main():
     if args.save_optimizer != None:
         save_optimizer(optimizer)
     
-    #x_train, x_test, y_train, y_test = my_train_test_split([[1],[2],[3],[4],[5],[6]], [["a"], ["b"], ["c"],["d"], ["e"], ["f"]])
-    #print x_train, x_test, y_train, y_test
-
 if __name__ == "__main__":
     main()
 
