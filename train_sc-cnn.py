@@ -5,6 +5,7 @@ import six
 import argparse
 import numpy as np
 from sklearn.cross_validation import train_test_split
+from sklearn import cross_validation
 
 import chainer
 import chainer.links as L
@@ -98,109 +99,142 @@ def train(args):
     dataset['source'] = dataset['source'].astype(np.float32) #特徴量
     dataset['target'] = dataset['target'].astype(np.int32) #ラベル
 
-    x_train, x_test, y_train, y_test = train_test_split(dataset['source'], dataset['target'], test_size=0.10)
-    N_test = y_test.size         # test data size
-    N = len(x_train)             # train data size
-    in_units = x_train.shape[1]  # 入力層のユニット数 (語彙数)
+    #x_train, x_test, y_train, y_test = train_test_split(dataset['source'], dataset['target'], test_size=0.10)
 
-    # (nsample, channel, height, width) の4次元テンソルに変換
-    input_channel = 1
-    x_train = x_train.reshape(len(x_train), input_channel, height, width) 
-    x_test  = x_test.reshape(len(x_test), input_channel, height, width)
+    # 交差検定の始まり... 
+    kfold = cross_validation.KFold(len(dataset['source']), n_folds=10)
+    k = 1
+    for train, test in kfold:
+        # 交差検定用にデータを分割
+        x_train = np.array([ dataset['source'][i] for i in train ], dtype=np.float32)
+        x_test = np.array([ dataset['source'][i] for i in test ], dtype=np.float32)
+        y_train = np.array([ dataset['target'][i] for i in train ], dtype=np.int32)
+        y_test = np.array([ dataset['target'][i] for i in test ], dtype=np.int32)
 
-    n_label = 2 # ラベル数
-    filter_height = [3,4,5] # フィルタの高さ
-    baseline_filter_height = [3]
-    filter_width  = width # フィルタの幅 (embeddingの次元数)
-    output_channel = 100 
-    decay = 0.0001 # 重み減衰
-    grad_clip = 3  # gradient norm threshold to clip
-    max_sentence_len = height # max length of sentences
+        N_test = y_test.size         # test data size
+        N = len(x_train)             # train data size
+        in_units = x_train.shape[1]  # 入力層のユニット数 (語彙数)
 
-    # モデルの定義
-    if args.baseline == False:
-        # 提案モデル
-        model = CNNSC(input_channel,
-                      output_channel,
-                      filter_height,
-                      filter_width,
-                      n_label,
-                      max_sentence_len)
-    else:
-        # ベースラインモデル (フィルタの種類が１つ)
-        model = CNNSC(input_channel,
-                      output_channel,
-                      baseline_filter_height,
-                      filter_width,
-                      n_label,
-                      max_sentence_len)
- 
-    # Setup optimizer
-    optimizer = optimizers.AdaDelta()
-    optimizer.setup(model)
-    optimizer.add_hook(chainer.optimizer.GradientClipping(grad_clip))
-    optimizer.add_hook(chainer.optimizer.WeightDecay(decay))
+        # (nsample, channel, height, width) の4次元テンソルに変換
+        input_channel = 1
+        x_train = x_train.reshape(len(x_train), input_channel, height, width) 
+        x_test  = x_test.reshape(len(x_test), input_channel, height, width)
 
-    #GPUを使うかどうか
-    if args.gpu >= 0:
-        cuda.check_cuda_available()
-        cuda.get_device(args.gpu).use()
-        model.to_gpu()
-    xp = np if args.gpu < 0 else cuda.cupy #args.gpu <= 0: use cpu, otherwise: use gpu
+        n_label = 2 # ラベル数
+        filter_height = [3,4,5] # フィルタの高さ
+        baseline_filter_height = [3]
+        filter_width  = width # フィルタの幅 (embeddingの次元数)
+        output_channel = 100 
+        decay = 0.0001 # 重み減衰
+        grad_clip = 3  # gradient norm threshold to clip
+        max_sentence_len = height # max length of sentences
 
-    # Learning loop
-    for epoch in six.moves.range(1, n_epoch + 1):
+        # モデルの定義
+        if args.baseline == False:
+            # 提案モデル
+            model = CNNSC(input_channel,
+                          output_channel,
+                          filter_height,
+                          filter_width,
+                          n_label,
+                          max_sentence_len)
+        else:
+            # ベースラインモデル (フィルタの種類が１つ)
+            model = CNNSC(input_channel,
+                          output_channel,
+                          baseline_filter_height,
+                          filter_width,
+                          n_label,
+                          max_sentence_len)
+     
+        # Setup optimizer
+        optimizer = optimizers.AdaDelta()
+        optimizer.setup(model)
+        optimizer.add_hook(chainer.optimizer.GradientClipping(grad_clip))
+        optimizer.add_hook(chainer.optimizer.WeightDecay(decay))
 
-        print 'epoch', epoch, '/', n_epoch
+        #GPUを使うかどうか
+        if args.gpu >= 0:
+            cuda.check_cuda_available()
+            cuda.get_device(args.gpu).use()
+            model.to_gpu()
+        xp = np if args.gpu < 0 else cuda.cupy #args.gpu <= 0: use cpu, otherwise: use gpu
+
+        # Learning loop
+        for epoch in six.moves.range(1, n_epoch + 1):
+
+            print 'epoch', epoch, '/', n_epoch
+            
+            # training
+            perm = np.random.permutation(N) #ランダムな整数列リストを取得
+            sum_train_loss     = 0.0
+            sum_train_accuracy = 0.0
+            for i in six.moves.range(0, N, batchsize):
+
+                #perm を使い x_train, y_trainからデータセットを選択 (毎回対象となるデータは異なる)
+                x = chainer.Variable(xp.asarray(x_train[perm[i:i + batchsize]])) #source
+                t = chainer.Variable(xp.asarray(y_train[perm[i:i + batchsize]])) #target
+                
+                model.zerograds()
+
+                y = model(x)
+                loss = F.softmax_cross_entropy(y, t) # 損失の計算
+                accuracy = F.accuracy(y, t) # 正解率の計算
+                
+                sum_train_loss += loss.data * len(t)
+                sum_train_accuracy += accuracy.data * len(t)
+                
+                # 最適化を実行
+                loss.backward()
+                optimizer.update()
+
+            print('train mean loss={}, accuracy={}'.format(sum_train_loss / N, sum_train_accuracy / N)) #平均誤差
+
+            # evaluation
+            sum_test_loss     = 0.0
+            sum_test_accuracy = 0.0
+            for i in six.moves.range(0, N_test, batchsize):
+
+                # all test data
+                x = chainer.Variable(xp.asarray(x_test[i:i + batchsize]))
+                t = chainer.Variable(xp.asarray(y_test[i:i + batchsize]))
+                
+                y = model(x, False)
+                loss = F.softmax_cross_entropy(y, t) # 損失の計算
+                accuracy = F.accuracy(y, t) # 正解率の計算
+     
+                sum_test_loss += loss.data * len(t)
+                sum_test_accuracy += accuracy.data * len(t)
+
+            print(' test mean loss={}, accuracy={}'.format(sum_test_loss / N_test, sum_test_accuracy / N_test)) #平均誤差
+
+            sys.stdout.flush()
         
-        # training
-        perm = np.random.permutation(N) #ランダムな整数列リストを取得
-        sum_train_loss     = 0.0
-        sum_train_accuracy = 0.0
-        for i in six.moves.range(0, N, batchsize):
-
-            #perm を使い x_train, y_trainからデータセットを選択 (毎回対象となるデータは異なる)
-            x = chainer.Variable(xp.asarray(x_train[perm[i:i + batchsize]])) #source
-            t = chainer.Variable(xp.asarray(y_train[perm[i:i + batchsize]])) #target
+        print "=============== ", k , "/ 10 ==============="
+        k += 1
             
-            model.zerograds()
-
-            y = model(x)
-            loss = F.softmax_cross_entropy(y, t) # 損失の計算
-            accuracy = F.accuracy(y, t) # 正解率の計算
-            
-            sum_train_loss += loss.data * len(t)
-            sum_train_accuracy += accuracy.data * len(t)
-            
-            # 最適化を実行
-            loss.backward()
-            optimizer.update()
-
-        print('train mean loss={}, accuracy={}'.format(sum_train_loss / N, sum_train_accuracy / N)) #平均誤差
-
-        # evaluation
-        sum_test_loss     = 0.0
-        sum_test_accuracy = 0.0
-        for i in six.moves.range(0, N_test, batchsize):
-
-            # all test data
-            x = chainer.Variable(xp.asarray(x_test[i:i + batchsize]))
-            t = chainer.Variable(xp.asarray(y_test[i:i + batchsize]))
-            
-            y = model(x, False)
-            loss = F.softmax_cross_entropy(y, t) # 損失の計算
-            accuracy = F.accuracy(y, t) # 正解率の計算
- 
-            sum_test_loss += loss.data * len(t)
-            sum_test_accuracy += accuracy.data * len(t)
-
-        print(' test mean loss={}, accuracy={}'.format(sum_test_loss / N_test, sum_test_accuracy / N_test)) #平均誤差
-
-        sys.stdout.flush()
-        
     return model, optimizer
 
+def my_train_test_split(source, target):
+    """
+    k-分割交差検定用にデータセットを分割する
+    i / k 番目の時のデータセットを作る
+    """
+    
+    kfold = cross_validation.KFold(len(source), n_folds=3)
+    for train, test in kfold:
+        
+        x_train = np.array([ source[i] for i in train ])
+        x_test = np.arange([ source[i] for i in test ])
+
+        y_train = np.array([ target[i] for i in train ])
+        y_test = np.arange([ target[i] for i in test ])
+
+    return x_train, x_test, y_train, y_test
+
+
 def main():
+
     parser = get_parser()
     args = parser.parse_args()
     model, optimizer = train(args)
@@ -209,6 +243,9 @@ def main():
         save_model(model)
     if args.save_optimizer != None:
         save_optimizer(optimizer)
+    
+    #x_train, x_test, y_train, y_test = my_train_test_split([[1],[2],[3],[4],[5],[6]], [["a"], ["b"], ["c"],["d"], ["e"], ["f"]])
+    #print x_train, x_test, y_train, y_test
 
 if __name__ == "__main__":
     main()
