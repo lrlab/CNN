@@ -1,0 +1,247 @@
+input file name: ../sc-cnn-chainer/dataset/input.dat
+loading word2vec model...
+height (max length of sentences): 59
+width (size of wordembedding vecteor ): 300
+epoch 1 / 100
+train mean loss=0.572251319885, accuracy=0.688868045807
+ test mean loss=0.573211729527, accuracy=0.693533241749
+epoch 2 / 100
+train mean loss=0.446855425835, accuracy=0.792057514191
+ test mean loss=0.485597193241, accuracy=0.77319586277
+epoch 3 / 100
+train mean loss=0.384908854961, accuracy=0.832707941532
+ test mean loss=0.497124999762, accuracy=0.768509864807
+epoch 4 / 100
+train mean loss=0.321447700262, accuracy=0.858765900135
+ test mean loss=0.54267001152, accuracy=0.746016860008
+epoch 5 / 100
+train mean loss=0.261569440365, accuracy=0.891598939896
+ test mean loss=0.747551262379, accuracy=0.718837857246
+epoch 6 / 100
+train mean loss=0.197115167975, accuracy=0.919845759869
+ test mean loss=0.663831174374, accuracy=0.765698194504
+epoch 7 / 100
+train mean loss=0.152861595154, accuracy=0.939754009247
+ test mean loss=0.69885712862, accuracy=0.768509864807
+epoch 8 / 100
+train mean loss=0.0957230105996, accuracy=0.965186595917
+ test mean loss=0.847104012966, accuracy=0.768509864807
+epoch 9 / 100
+train mean loss=0.0667583346367, accuracy=0.975922465324
+ test mean loss=1.01872205734, accuracy=0.76382380724
+epoch 10 / 100
+train mean loss=0.0335969030857, accuracy=0.990410685539
+ test mean loss=1.1093916893, accuracy=0.779756307602
+epoch 11 / 100
+train mean loss=0.0180257726461, accuracy=0.99343341589
+ test mean loss=1.32606518269, accuracy=0.75257730484
+epoch 12 / 100
+train mean loss=0.0167446564883, accuracy=0.994579970837
+ test mean loss=1.22667455673, accuracy=0.781630754471
+epoch 13 / 100
+train mean loss=0.00826529599726, accuracy=0.998019576073
+ test mean loss=1.32280242443, accuracy=0.775070309639
+epoch 14 / 100
+train mean loss=0.0024963344913, accuracy=0.999687314034
+ test mean loss=1.36346232891, accuracy=0.776007473469
+epoch 15 / 100
+train mean loss=0.0012708135182, accuracy=0.999791562557
+ test mean loss=1.35317337513, accuracy=0.776007473469
+epoch 16 / 100
+train mean loss=0.00116763170809, accuracy=0.999791562557
+ test mean loss=1.33531332016, accuracy=0.779756307602
+epoch 17 / 100
+train mean loss=0.000967832515016, accuracy=0.999791562557
+ test mean loss=1.31525480747, accuracy=0.782567918301
+epoch 18 / 100
+train mean loss=0.0010931477882, accuracy=0.999791562557
+ test mean loss=1.30147790909, accuracy=0.780693531036
+epoch 19 / 100
+train mean loss=0.00104542146437, accuracy=0.999791562557
+ test mean loss=1.26947021484, accuracy=0.780693531036
+epoch 20 / 100
+train mean loss=0.00105402560439, accuracy=0.999791562557
+ test mean loss=1.2418640852, accuracy=0.77319586277
+epoch 21 / 100
+train mean loss=0.00103734154254, accuracy=0.999791562557
+ test mean loss=1.22546601295, accuracy=0.783505141735
+epoch 22 / 100
+train mean loss=0.00112837448251, accuracy=0.999791562557
+ test mean loss=1.21921503544, accuracy=0.779756307602
+epoch 23 / 100
+train mean loss=0.00105148192961, accuracy=0.999791562557
+ test mean loss=1.19393348694, accuracy=0.783505141735
+epoch 24 / 100
+train mean loss=0.00115835270844, accuracy=0.999791562557
+ test mean loss=1.16934192181, accuracy=0.787253975868
+epoch 25 / 100
+train mean loss=0.00113635475282, accuracy=0.999791562557
+ test mean loss=1.15755021572, accuracy=0.785379588604
+epoch 26 / 100
+train mean loss=0.00113806291483, accuracy=0.999791562557
+ test mean loss=1.16284561157, accuracy=0.782567918301
+epoch 27 / 100
+train mean loss=0.00117709860206, accuracy=0.999791562557
+ test mean loss=1.13421797752, accuracy=0.781630754471
+epoch 28 / 100
+train mean loss=0.00117492862046, accuracy=0.999791562557
+ test mean loss=1.13300061226, accuracy=0.767572641373
+epoch 29 / 100
+train mean loss=0.00119284144603, accuracy=0.999791562557
+ test mean loss=1.1207536459, accuracy=0.783505141735
+epoch 30 / 100
+train mean loss=0.00115579459816, accuracy=0.999791562557
+ test mean loss=1.1163674593, accuracy=0.775070309639
+epoch 31 / 100
+train mean loss=0.00123098981567, accuracy=0.999687314034
+ test mean loss=1.13635528088, accuracy=0.767572641373
+epoch 32 / 100
+train mean loss=0.00139931193553, accuracy=0.999791562557
+ test mean loss=1.08982586861, accuracy=0.780693531036
+epoch 33 / 100
+train mean loss=0.0809498727322, accuracy=0.973629355431
+ test mean loss=1.8270919323, accuracy=0.686972796917
+epoch 34 / 100
+train mean loss=0.279748082161, accuracy=0.888055026531
+ test mean loss=0.701268911362, accuracy=0.782567918301
+epoch 35 / 100
+train mean loss=0.113358467817, accuracy=0.957577645779
+ test mean loss=0.875295341015, accuracy=0.76382380724
+epoch 36 / 100
+train mean loss=0.0468784160912, accuracy=0.984365224838
+ test mean loss=1.1177123785, accuracy=0.762886583805
+epoch 37 / 100
+train mean loss=0.0268308110535, accuracy=0.990619122982
+ test mean loss=1.1650646925, accuracy=0.776007473469
+epoch 38 / 100
+train mean loss=0.0064835222438, accuracy=0.99916613102
+ test mean loss=1.23835384846, accuracy=0.776944696903
+epoch 39 / 100
+train mean loss=0.0021775055211, accuracy=0.999687314034
+ test mean loss=1.33198082447, accuracy=0.782567918301
+epoch 40 / 100
+train mean loss=0.00126864062622, accuracy=0.999791562557
+ test mean loss=1.29314637184, accuracy=0.790065586567
+epoch 41 / 100
+train mean loss=0.00104204204399, accuracy=0.999791562557
+ test mean loss=1.28277444839, accuracy=0.786316752434
+epoch 42 / 100
+train mean loss=0.00104720692616, accuracy=0.999791562557
+ test mean loss=1.28388345242, accuracy=0.787253975868
+epoch 43 / 100
+train mean loss=0.000953604409005, accuracy=0.999791562557
+ test mean loss=1.25951015949, accuracy=0.783505141735
+epoch 44 / 100
+train mean loss=0.00107773533091, accuracy=0.999791562557
+ test mean loss=1.2230193615, accuracy=0.789128422737
+epoch 45 / 100
+train mean loss=0.0010597796645, accuracy=0.999791562557
+ test mean loss=1.20405757427, accuracy=0.785379588604
+epoch 46 / 100
+train mean loss=0.000982177676633, accuracy=0.999791562557
+ test mean loss=1.20139992237, accuracy=0.785379588604
+epoch 47 / 100
+train mean loss=0.00105996464845, accuracy=0.999791562557
+ test mean loss=1.17503845692, accuracy=0.786316752434
+epoch 48 / 100
+train mean loss=0.00112367072143, accuracy=0.999791562557
+ test mean loss=1.16861915588, accuracy=0.7938144207
+epoch 49 / 100
+train mean loss=0.00118382123765, accuracy=0.999791562557
+ test mean loss=1.13182783127, accuracy=0.787253975868
+epoch 50 / 100
+train mean loss=0.00110401108395, accuracy=0.999791562557
+ test mean loss=1.11598658562, accuracy=0.787253975868
+epoch 51 / 100
+train mean loss=0.00119483994786, accuracy=0.999791562557
+ test mean loss=1.1105645895, accuracy=0.785379588604
+epoch 52 / 100
+train mean loss=0.00117668276653, accuracy=0.999791562557
+ test mean loss=1.10235023499, accuracy=0.791002810001
+epoch 53 / 100
+train mean loss=0.00118746841326, accuracy=0.999791562557
+ test mean loss=1.07882368565, accuracy=0.789128422737
+epoch 54 / 100
+train mean loss=0.00121826585382, accuracy=0.999791562557
+ test mean loss=1.07452440262, accuracy=0.795688867569
+epoch 55 / 100
+train mean loss=0.00118173018564, accuracy=0.999791562557
+ test mean loss=1.06851696968, accuracy=0.785379588604
+epoch 56 / 100
+train mean loss=0.00129362987354, accuracy=0.999791562557
+ test mean loss=1.05832886696, accuracy=0.788191199303
+epoch 57 / 100
+train mean loss=0.00132721720729, accuracy=0.999791562557
+ test mean loss=1.04732227325, accuracy=0.789128422737
+epoch 58 / 100
+train mean loss=0.00128906604368, accuracy=0.999791562557
+ test mean loss=1.03723418713, accuracy=0.783505141735
+epoch 59 / 100
+train mean loss=0.0396584533155, accuracy=0.991140305996
+ test mean loss=3.04722261429, accuracy=0.632614791393
+epoch 60 / 100
+train mean loss=0.357932209969, accuracy=0.85261619091
+ test mean loss=0.648982644081, accuracy=0.766635417938
+epoch 61 / 100
+train mean loss=0.0945838391781, accuracy=0.968313515186
+ test mean loss=1.22956335545, accuracy=0.729147136211
+epoch 62 / 100
+train mean loss=0.0387872345746, accuracy=0.986554086208
+ test mean loss=1.00822091103, accuracy=0.77225869894
+epoch 63 / 100
+train mean loss=0.0145895332098, accuracy=0.995518028736
+ test mean loss=1.1473839283, accuracy=0.769447028637
+epoch 64 / 100
+train mean loss=0.00370625522919, accuracy=0.99958306551
+ test mean loss=1.19223427773, accuracy=0.780693531036
+epoch 65 / 100
+train mean loss=0.00165205681697, accuracy=0.999791562557
+ test mean loss=1.19491708279, accuracy=0.779756307602
+epoch 66 / 100
+train mean loss=0.00114802177995, accuracy=0.999791562557
+ test mean loss=1.19604253769, accuracy=0.785379588604
+epoch 67 / 100
+train mean loss=0.00106222170871, accuracy=0.999791562557
+ test mean loss=1.18237566948, accuracy=0.783505141735
+epoch 68 / 100
+train mean loss=0.000995221897028, accuracy=0.999791562557
+ test mean loss=1.15964686871, accuracy=0.78444236517
+epoch 69 / 100
+train mean loss=0.000948885863181, accuracy=0.999791562557
+ test mean loss=1.16472601891, accuracy=0.780693531036
+epoch 70 / 100
+train mean loss=0.00104576710146, accuracy=0.999791562557
+ test mean loss=1.12649619579, accuracy=0.787253975868
+epoch 71 / 100
+train mean loss=0.00104881462175, accuracy=0.999791562557
+ test mean loss=1.09724998474, accuracy=0.789128422737
+epoch 72 / 100
+train mean loss=0.00105134060141, accuracy=0.999791562557
+ test mean loss=1.07935345173, accuracy=0.791002810001
+epoch 73 / 100
+train mean loss=0.00105798523873, accuracy=0.999791562557
+ test mean loss=1.06568205357, accuracy=0.789128422737
+epoch 74 / 100
+train mean loss=0.00114777055569, accuracy=0.999791562557
+ test mean loss=1.08237361908, accuracy=0.781630754471
+epoch 75 / 100
+train mean loss=0.00122647942044, accuracy=0.999791562557
+ test mean loss=1.07071745396, accuracy=0.78444236517
+epoch 76 / 100
+train mean loss=0.0011736167362, accuracy=0.999791562557
+ test mean loss=1.03093385696, accuracy=0.789128422737
+epoch 77 / 100
+train mean loss=0.00117863400374, accuracy=0.999791562557
+ test mean loss=1.03943836689, accuracy=0.792877197266
+epoch 78 / 100
+train mean loss=0.0012168881949, accuracy=0.999791562557
+ test mean loss=1.01466095448, accuracy=0.791940033436
+epoch 79 / 100
+train mean loss=0.00117410800885, accuracy=0.999791562557
+ test mean loss=0.998876750469, accuracy=0.790065586567
+epoch 80 / 100
+train mean loss=0.00118540332187, accuracy=0.999791562557
+ test mean loss=0.998357117176, accuracy=0.792877197266
+epoch 81 / 100
+train mean loss=0.0011059071403, accuracy=0.999791562557
+ test mean loss=0.979194641113, accuracy=0.792877197266
