@@ -9,10 +9,11 @@ Please download `GoogleNews-vectors-negative300.bin.gz` from [this site](https:/
   $ python train_sc-cnn.py [-h] [--gpu CORE_NUMBER] [--data PATH] [--epoch EPOCH] [--batchsize BATCHSIZE] [--save-model PATH] [--save-optimizer PATH] [--baseline]
 
 
-# optional arguments:
-  -h, --help            show this help message and exit
-  --gpu CORE_NUMBER     use CORE_NUMBER gpu (default: use cpu)
-  --data PATH           an input data file
+# Optional arguments
+```
+  -h, --help            show this help message and exit   
+  --gpu CORE_NUMBER     use CORE_NUMBER gpu (default: use cpu)  
+  --data PATH           an input data file  
   --epoch EPOCH         number of epochs to learn
   --batchsize BATCHSIZE
                         learning minibatch size
@@ -20,3 +21,4 @@ Please download `GoogleNews-vectors-negative300.bin.gz` from [this site](https:/
   --save-optimizer PATH
                         save optimizer to PATH
   --baseline            if true, run baseline model
+```
